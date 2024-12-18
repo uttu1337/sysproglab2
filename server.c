@@ -42,7 +42,7 @@ void handle_request(const char *request, char *response) {
         Movement movement = {atoi(arg1), atoi(arg2), "", atoi(arg3), ""};
         strncpy(movement.type, arg4, 10);
         strncpy(movement.date, arg5, 11);
-        add_movement("/Users/georgijzukov/Documents/system_prog2/system_prog2/goods_movement.txt", movement);
+        add_movement("/root/sysproglab2/goods_movement.txt", movement);
         snprintf(response, BUFFER_SIZE, "Movement added: ID=%d, ProductID=%d, Type=%s, Quantity=%d, Date=%s",
                  movement.id, movement.product_id, movement.type, movement.quantity, movement.date);
 
@@ -86,7 +86,7 @@ int main(void) {
     int addrlen = sizeof(address);
     char buffer[BUFFER_SIZE] = {0};
     char response[BUFFER_SIZE];
-
+    signal(SIGPIPE, SIG_IGN)
     // Создание сокета
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
         perror("Socket failed");
