@@ -69,12 +69,12 @@ void handle_request(const char *request, char *response) {
         strncpy(delivery.client, arg3, 10);
         strncpy(delivery.status, arg5, 11);
         add_delivery("/root/sysproglab2/goods_delivery.txt", delivery);
-        snprintf(response, BUFFER_SIZE, "Delivery added: ID=%d, ProductID=%d, Type=%s, Quantity=%s, Date=%s",
+        snprintf(response, BUFFER_SIZE, "Delivery added: ID=%d, ProductID=%d, Client=%s, Address=%s, Status=%s",
                  delivery.id, delivery.product_id, delivery.client, delivery.address, delivery.status);
 
     }
     else if (strcmp(command, "list_delivery") == 0) {
-        FILE *file = fopen("/Users/georgijzukov/Documents/system_prog2/system_prog2/goods.txt", "rb");
+         FILE *file = fopen("/root/sysproglab2/goods_delivery.txt", "rb");
         if (!file) {
             snprintf(response, BUFFER_SIZE, "Failed to open delivery file.");
         } else {
