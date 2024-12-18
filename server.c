@@ -20,11 +20,11 @@ void handle_request(const char *request, char *response) {
     if (strcmp(command, "add_product") == 0 && args_count >= 3) {
         Product product = {atoi(arg1), "", atoi(arg2)};
         strncpy(product.name, arg3, MAX_NAME);
-        add_product("~/sysproglab2/goods.txt", product);
+        add_product("/root/sysproglab2/goods.txt", product);
         snprintf(response, BUFFER_SIZE, "Product added: ID=%d, Name=%s, Quantity=%d", product.id, product.name, product.quantity);
 
     } else if (strcmp(command, "list_products") == 0) {
-        FILE *file = fopen("~/sysproglab2/goods.txt", "rb");
+        FILE *file = fopen("/root/sysproglab2/goods.txt", "rb");
         if (!file) {
             snprintf(response, BUFFER_SIZE, "Failed to open products file.");
         } else {
@@ -42,12 +42,12 @@ void handle_request(const char *request, char *response) {
         Movement movement = {atoi(arg1), atoi(arg2), "", atoi(arg3), ""};
         strncpy(movement.type, arg4, 10);
         strncpy(movement.date, arg5, 11);
-        add_movement("~/sysproglab2/goods_movement.txt", movement);
+        add_movement("/root/sysproglab2/goods_movement.txt", movement);
         snprintf(response, BUFFER_SIZE, "Movement added: ID=%d, ProductID=%d, Type=%s, Quantity=%d, Date=%s",
                  movement.id, movement.product_id, movement.type, movement.quantity, movement.date);
 
     } else if (strcmp(command, "list_movements") == 0) {
-        FILE *file = fopen("~/sysproglab2/goods_movement.txt", "rb");
+        FILE *file = fopen("/root/sysproglab2/goods_movement.txt", "rb");
         if (!file) {
             snprintf(response, BUFFER_SIZE, "Failed to open movements file.");
         } else {
@@ -67,7 +67,7 @@ void handle_request(const char *request, char *response) {
         Delivery delivery = {atoi(arg1), atoi(arg2), "", atoi(arg3), ' '};
         strncpy(delivery.address, arg4, 10);
         strncpy(delivery.status, arg5, 11);
-        add_delivery("~/sysproglab2/goods_delivery.txt", delivery);
+        add_delivery("/root/sysproglab2/goods_delivery.txt", delivery);
         snprintf(response, BUFFER_SIZE, "Movement added: ID=%d, ProductID=%d, Type=%s, Quantity=%s, Date=%s",
                  delivery.id, delivery.product_id, delivery.client, delivery.address, delivery.status);
 
