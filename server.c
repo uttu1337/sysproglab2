@@ -18,8 +18,8 @@ void handle_request(const char *request, char *response) {
     args_count = sscanf(request, "%s %s %s %s", command, arg1, arg2, arg3);
 
     if (strcmp(command, "add_product") == 0 && args_count >= 3) {
-        Product product = {atoi(arg1), "", atoi(arg2)};
-        strncpy(product.name, arg3, MAX_NAME);
+        Product product = {atoi(arg1), "", atoi(arg3)};
+        strncpy(product.name, arg2, MAX_NAME);
         add_product("/root/sysproglab2/goods.txt", product);
         snprintf(response, BUFFER_SIZE, "Product added: ID=%d, Name=%s, Quantity=%d", product.id, product.name, product.quantity);
 
@@ -39,8 +39,8 @@ void handle_request(const char *request, char *response) {
         }
 
     } else if (strcmp(command, "add_movement") == 0 && args_count >= 5) {
-        Movement movement = {atoi(arg1), atoi(arg2), "", atoi(arg3), ""};
-        strncpy(movement.type, arg4, 10);
+        Movement movement = {atoi(arg1), atoi(arg2), "", atoi(arg4), ""};
+        strncpy(movement.type, arg3, 10);
         strncpy(movement.date, arg5, 11);
         add_movement("/root/sysproglab2/goods_movement.txt", movement);
         snprintf(response, BUFFER_SIZE, "Movement added: ID=%d, ProductID=%d, Type=%s, Quantity=%d, Date=%s",
@@ -64,8 +64,9 @@ void handle_request(const char *request, char *response) {
 
     } 
     else if (strcmp(command, "add_delivery") == 0 && args_count >= 5) {
-        Delivery delivery = {atoi(arg1), atoi(arg2), "", atoi(arg3), ' '};
+        Delivery delivery = {atoi(arg1), atoi(arg2), "", "", ' '};
         strncpy(delivery.address, arg4, 10);
+        strncpy(delivery.client, arg3, 10);
         strncpy(delivery.status, arg5, 11);
         add_delivery("/root/sysproglab2/goods_delivery.txt", delivery);
         snprintf(response, BUFFER_SIZE, "Movement added: ID=%d, ProductID=%d, Type=%s, Quantity=%s, Date=%s",
@@ -86,7 +87,6 @@ int main(void) {
     int addrlen = sizeof(address);
     char buffer[BUFFER_SIZE] = {0};
     char response[BUFFER_SIZE];
-    signal(SIGPIPE, SIG_IGN)
         
         FILE *goods_file = fopen("/root/sysproglab2/goods.txt", "a+b");
     if (!goods_file) {
@@ -145,18 +145,36 @@ int main(void) {
             continue;
         }
         printf("Client connected\n");
-        // Чтение запроса клиента
-        read(new_socket, buffer, BUFFER_SIZE);
-        printf("Received: %s\n", buffer);
 
-        // Обработка запроса
-        handle_request(buffer, response);
+        while (1) {
+            // Очистка буфера
+            memset(buffer, 0, BUFFER_SIZE);
+            memset(response, 0, BUFFER_SIZE);
 
-        // Отправка ответа клиенту
-        send(new_socket, response, strlen(response), 0);
-        printf("Response sent: %s\n", response);
+            // Чтение запроса клиента
+            int bytes_read = read(new_socket, buffer, BUFFER_SIZE);
+            if (bytes_read <= 0) {
+                printf("Client disconnected\n");
+                break;
+            }
 
-        // Закрытие соединения
+            printf("Received: %s\n", buffer);
+
+            // Обработка запроса
+            handle_request(buffer, response);
+
+            // Если клиент отправляет "exit", завершаем соединение
+            if (strcmp(buffer, "exit\n") == 0 || strcmp(buffer, "exit\r\n") == 0) {
+                printf("Client requested to close the connection.\n");
+                break;
+            }
+
+            // Отправка ответа клиенту
+            send(new_socket, response, strlen(response), 0);
+            printf("Response sent: %s\n", response);
+        }
+
+        // Закрытие соединения с клиентом
         close(new_socket);
     }
 
