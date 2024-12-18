@@ -120,7 +120,7 @@ int main(void) {
             perror("Accept failed");
             continue;
         }
-
+        printf("Client connected\n");
         // Чтение запроса клиента
         read(new_socket, buffer, BUFFER_SIZE);
         printf("Received: %s\n", buffer);
