@@ -76,7 +76,7 @@ void handle_request(const char *request, char *response) {
     else if (strcmp(command, "list_delivery") == 0) {
          FILE *file = fopen("/root/sysproglab2/goods_delivery.txt", "rb");
         if (!file) {
-            snprintf(response, BUFFER_SIZE, "Failed to open delivery file.");
+            snprintf(response, BUFFER_SIZE, "Failed to open delivery file!");
         } else {
             Delivery delivery;
             strcpy(response, "Deliveries:\n");
