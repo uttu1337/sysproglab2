@@ -130,22 +130,28 @@ int main(void) {
     }
 
     // Прослушивание порта
-    if (listen(server_fd, 3) < 0) {
+    if (listen(server_fd, 1) < 0) {
         perror("Listen failed");
         close(server_fd);
         exit(EXIT_FAILURE);
     }
 
     printf("Server is listening on port %d...\n", PORT);
-
+    int is_client_connected = 0;
     while (1) {
         // Принятие подключения
         if ((new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t *)&addrlen)) < 0) {
             perror("Accept failed");
             continue;
         }
+        if (is_client_connected) {
+            printf("Another client tried to connect. Rejecting...\n");
+            close(new_socket);
+            continue;
+        }
         printf("Client connected\n");
-
+        is_client_connected = 1;
+        
         while (1) {
             // Очистка буфера
             memset(buffer, 0, BUFFER_SIZE);
@@ -176,6 +182,7 @@ int main(void) {
 
         // Закрытие соединения с клиентом
         close(new_socket);
+        is_client_connected = 0;
     }
 
     close(server_fd);
