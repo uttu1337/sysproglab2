@@ -15,7 +15,7 @@ void handle_request(const char *request, char *response) {
     int args_count;
 
     // Парсинг команды и аргументов
-    args_count = sscanf(request, "%s %s %s %s", command, arg1, arg2, arg3);
+    args_count = sscanf(request, "%s %s %s %s", command, arg1, arg2, arg3, arg4, arg5);
 
     if (strcmp(command, "add_product") == 0 && args_count >= 3) {
         Product product = {atoi(arg1), "", atoi(arg3)};
