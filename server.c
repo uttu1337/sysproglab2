@@ -87,6 +87,30 @@ int main(void) {
     char buffer[BUFFER_SIZE] = {0};
     char response[BUFFER_SIZE];
     signal(SIGPIPE, SIG_IGN)
+        
+        FILE *goods_file = fopen("/root/sysproglab2/goods.txt", "a+b");
+    if (!goods_file) {
+        snprintf(response, BUFFER_SIZE, "Error: Unable to open or create goods.txt");
+        return;
+    }
+    fclose(goods_file);
+
+    // Проверка файла goods_movement.txt
+    FILE *movement_file = fopen("/root/sysproglab2/goods_movement.txt", "a+b");
+    if (!movement_file) {
+        snprintf(response, BUFFER_SIZE, "Error: Unable to open or create goods_movement.txt");
+        return;
+    }
+    fclose(movement_file);
+
+    // Проверка файла goods_delivery.txt
+    FILE *delivery_file = fopen("/root/sysproglab2/goods_delivery.txt", "a+b");
+    if (!delivery_file) {
+        snprintf(response, BUFFER_SIZE, "Error: Unable to open or create goods_delivery.txt");
+        return;
+    }
+    fclose(delivery_file);
+        
     // Создание сокета
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
         perror("Socket failed");
